@@ -7,8 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/konradasb/systemd-resolved-exporter/internal/resolver"
 	"github.com/prometheus/client_golang/prometheus/testutil"
+
+	"github.com/konradasb/systemd-resolved-exporter/internal/resolver"
 )
 
 type stubProvider struct {
@@ -88,7 +89,7 @@ func TestCollectorIncrementsScrapeErrorsOnFailure(t *testing.T) {
 
 	// Two preliminary failing scrapes; the CollectAndCompare below makes a
 	// third, so we expect scrape_errors_total = 3.
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		if n := testutil.CollectAndCount(c, "systemd_resolved_exporter_scrape_errors_total"); n != 1 {
 			t.Fatalf("expected 1 series, got %d", n)
 		}
