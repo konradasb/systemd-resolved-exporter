@@ -15,8 +15,9 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/konradasb/systemd-resolved-exporter/internal/resolver"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/konradasb/systemd-resolved-exporter/internal/resolver"
 )
 
 const (

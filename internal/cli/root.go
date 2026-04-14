@@ -11,15 +11,16 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/konradasb/systemd-resolved-exporter/internal/collector"
-	"github.com/konradasb/systemd-resolved-exporter/internal/resolver"
-	"github.com/konradasb/systemd-resolved-exporter/internal/server"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	versioncollector "github.com/prometheus/client_golang/prometheus/collectors/version"
 	"github.com/prometheus/common/promslog"
 	"github.com/prometheus/common/version"
 	"github.com/spf13/cobra"
+
+	"github.com/konradasb/systemd-resolved-exporter/internal/collector"
+	"github.com/konradasb/systemd-resolved-exporter/internal/resolver"
+	"github.com/konradasb/systemd-resolved-exporter/internal/server"
 )
 
 const exporterName = "systemd_resolved_exporter"
