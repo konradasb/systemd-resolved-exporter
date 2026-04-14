@@ -1,0 +1,38 @@
+# Example Prometheus alerting rules for systemd-resolved-exporter.
+groups:
+  - name: systemd-resolved
+    rules:
+      - alert: SystemdResolvedExporterDown
+        expr: systemd_resolved_exporter_up == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "systemd-resolved exporter is failing scrapes on {{ $labels.instance }}"
+          description: |
+            The exporter has been unable to read systemd-resolved statistics
+            for at least 5 minutes. Check that systemd-resolved is running and
+            that the exporter has access to the system D-Bus.
+
+      - alert: SystemdResolvedHighFailureRate
+        expr: |
+          rate(systemd_resolved_failed_responses_total[5m])
+            / clamp_min(rate(systemd_resolved_transactions_total[5m]), 1)
+            > 0.1
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High DNS failure rate on {{ $labels.instance }}"
+          description: "More than 10% of DNS responses have failed for the last 10 minutes."
+
+      - alert: SystemdResolvedDNSSECBogus
+        expr: increase(systemd_resolved_dnssec_verdicts_total{result="bogus"}[15m]) > 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "DNSSEC bogus verdicts on {{ $labels.instance }}"
+          description: |
+            systemd-resolved has returned bogus DNSSEC verdicts in the last 15
+            minutes. This may indicate misconfigured zones or an attack.

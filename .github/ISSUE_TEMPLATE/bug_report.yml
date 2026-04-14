@@ -1,0 +1,86 @@
+name: Bug report
+description: Report a problem with systemd-resolved-exporter
+title: "bug: <short description>"
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report! Please fill out the
+        sections below so we can reproduce and fix the issue quickly.
+
+  - type: input
+    id: version
+    attributes:
+      label: Exporter version
+      description: Output of `systemd-resolved-exporter --version`
+      placeholder: "v0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: systemd-version
+    attributes:
+      label: systemd version
+      description: Output of `systemctl --version | head -n1`
+      placeholder: "systemd 255"
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: OS / distribution
+      placeholder: "Ubuntu 24.04 / Debian 12 / Arch ..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: collect-mode
+    attributes:
+      label: Collect mode
+      options:
+        - dbus
+        - cli
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear and concise description of the bug.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run the exporter with `--collect-mode=dbus`
+        2. Scrape `/metrics`
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      render: shell
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of conduct
+      options:
+        - label: I searched existing issues and did not find a duplicate.
+          required: true

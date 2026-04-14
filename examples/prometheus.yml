@@ -1,0 +1,12 @@
+# Example Prometheus scrape configuration for systemd-resolved-exporter.
+#
+# Drop this into your prometheus.yml under `scrape_configs:`.
+scrape_configs:
+  - job_name: systemd-resolved
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    static_configs:
+      - targets:
+          - localhost:9924
+        labels:
+          service: systemd-resolved

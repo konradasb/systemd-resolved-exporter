@@ -1,0 +1,126 @@
+version: 2
+
+project_name: systemd-resolved-exporter
+
+before:
+  hooks:
+    - go mod tidy
+    - go mod download
+
+builds:
+  - id: systemd-resolved-exporter
+    main: ./cmd/systemd-resolved-exporter
+    binary: systemd-resolved-exporter
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+      - arm
+    goarm:
+      - "7"
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X github.com/prometheus/common/version.Version={{ .Version }}
+      - -X github.com/prometheus/common/version.Revision={{ .FullCommit }}
+      - -X github.com/prometheus/common/version.Branch={{ .Branch }}
+      - -X github.com/prometheus/common/version.BuildUser=goreleaser
+      - -X github.com/prometheus/common/version.BuildDate={{ .Date }}
+
+archives:
+  - id: default
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    format: tar.gz
+    files:
+      - LICENSE
+      - NOTICE
+      - README.md
+      - CHANGELOG.md
+
+checksum:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
+  algorithm: sha256
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - "^ci:"
+      - "Merge pull request"
+      - "Merge branch"
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\(.+\))??!?:.+$'
+      order: 0
+    - title: Bug fixes
+      regexp: '^.*?fix(\(.+\))??!?:.+$'
+      order: 1
+    - title: Other
+      order: 999
+
+dockers:
+  - id: amd64
+    use: buildx
+    goos: linux
+    goarch: amd64
+    image_templates:
+      - "ghcr.io/konradasb/systemd-resolved-exporter:{{ .Version }}-amd64"
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.description=Prometheus exporter for systemd-resolved
+      - --label=org.opencontainers.image.url=https://github.com/konradasb/systemd-resolved-exporter
+      - --label=org.opencontainers.image.source=https://github.com/konradasb/systemd-resolved-exporter
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.created={{ .Date }}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+
+  - id: arm64
+    use: buildx
+    goos: linux
+    goarch: arm64
+    image_templates:
+      - "ghcr.io/konradasb/systemd-resolved-exporter:{{ .Version }}-arm64"
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - --platform=linux/arm64
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.description=Prometheus exporter for systemd-resolved
+      - --label=org.opencontainers.image.url=https://github.com/konradasb/systemd-resolved-exporter
+      - --label=org.opencontainers.image.source=https://github.com/konradasb/systemd-resolved-exporter
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.created={{ .Date }}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+
+docker_manifests:
+  - name_template: "ghcr.io/konradasb/systemd-resolved-exporter:{{ .Version }}"
+    image_templates:
+      - "ghcr.io/konradasb/systemd-resolved-exporter:{{ .Version }}-amd64"
+      - "ghcr.io/konradasb/systemd-resolved-exporter:{{ .Version }}-arm64"
+  - name_template: "ghcr.io/konradasb/systemd-resolved-exporter:latest"
+    image_templates:
+      - "ghcr.io/konradasb/systemd-resolved-exporter:{{ .Version }}-amd64"
+      - "ghcr.io/konradasb/systemd-resolved-exporter:{{ .Version }}-arm64"
+
+release:
+  github:
+    owner: konradasb
+    name: systemd-resolved-exporter
+  draft: false
+  prerelease: auto

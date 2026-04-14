@@ -1,0 +1,39 @@
+[Unit]
+Description=Prometheus exporter for systemd-resolved
+Documentation=https://github.com/konradasb/systemd-resolved-exporter
+After=systemd-resolved.service network-online.target
+Wants=systemd-resolved.service network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/systemd-resolved-exporter \
+  --web.listen-address=:9924 \
+  --collect-mode=dbus \
+  --log.level=info \
+  --log.format=logfmt
+Restart=on-failure
+RestartSec=5s
+
+# Hardening
+DynamicUser=yes
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+PrivateTmp=yes
+PrivateDevices=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources
+
+[Install]
+WantedBy=multi-user.target

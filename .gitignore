@@ -1,0 +1,19 @@
+# Build artifacts
+/bin/
+/dist/
+/build/
+
+# Test output
+*.test
+*.out
+coverage.*
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Environment
+.env
+.env.local

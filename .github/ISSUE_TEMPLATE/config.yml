@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or discussion
+    url: https://github.com/konradasb/systemd-resolved-exporter/discussions
+    about: Please ask questions and start discussions here instead of opening an issue.
